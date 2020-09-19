@@ -6,72 +6,82 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public abstract class LayouModelAdapter extends RecyclerView.Adapter {
+/**
+ * @ClassName: LayouModelAdapter
+ * @Description:layout结构适配器
+ * @Author: 范明华
+ * @CreateDate: 2020/9/12 0012 11:15
+ * @Version: 1.0
+ */
+public abstract class LayouModelAdapter<T extends LayouModelAdapter.BaseItem> extends RecyclerView.Adapter {
 
-    protected ArrayList<BaseBean> mList;
-    private Context context;
+    protected ArrayList<T> mList;
+    protected Context context;
     private LayoutInflater inflater;
     private OnItemClickListener onItemClickListener;
-    private RecyclerViewOnClickListener onClickListener;
-    protected View.OnClickListener buttonClickListener;
+    private ArrayList<OnChildItemClickListener> onChildItemClickListeners = new ArrayList<>(0);
+    private ArrayList<Integer> onClickIds = new ArrayList<>(0);
 
-
-    public void setButtonClickListener(View.OnClickListener buttonClickListener) {
-        this.buttonClickListener = buttonClickListener;
-    }
-
-    //主要是处理一些特色的
-    protected void beforeClick(int position, View view) {
-
-    }
-
-
-    public LayouModelAdapter(ArrayList<BaseBean> list) {
+    public LayouModelAdapter(ArrayList<T> list) {
         this.mList = list;
-        onClickListener = new RecyclerViewOnClickListener(this) {
-            @Override
-            public void onClick(int position, long itemId, View view) {
-                beforeClick(position, view);
-                if (onItemClickListener != null) {
-                    onItemClickListener.onItemClick(position, itemId);
-                }
-            }
-        };
     }
 
-    public abstract class RecyclerViewOnClickListener implements View.OnClickListener {
-        private LayouModelAdapter adapter;
-
-        public RecyclerViewOnClickListener(LayouModelAdapter adapter) {
-            this.adapter = adapter;
-        }
-
-        @Override
-        public void onClick(View v) {
-            XHolder holder = (XHolder) v.getTag();
-            onClick(holder.getAdapterPosition(), holder.getItemId(), v);
-        }
-
-        public abstract void onClick(int position, long itemId, View view);
-    }
 
     public class XHolder extends RecyclerView.ViewHolder {
+        private ArrayList<View> viewList;
+
         public XHolder(View itemView) {
             super(itemView);
+            //存储所有View  优化每次需要findViewById操作
+            viewList = getAllChildren(itemView);
+        }
+
+        public <T extends View> T findViewById(int id) {
+            for (View v : viewList) {
+                if (v.getId() != View.NO_ID && v.getId() == id) {
+                    return (T) v;
+                }
+            }
+            return null;
+        }
+
+        public void setText(int id, String str) {
+            TextView tmp = findViewById(id);
+            tmp.setText(str);
+        }
+
+        public ImageView getImageViewById(int id) {
+            ImageView img = findViewById(id);
+            return img;
         }
 
 
-        public <T extends View> T findViewById(int resid) {
-            return (T) itemView.findViewById(resid);
+        private ArrayList<View> getAllChildren(View v) {
+            if (!(v instanceof ViewGroup)) {
+                ArrayList<View> viewArrayList = new ArrayList<View>();
+                viewArrayList.add(v);
+                return viewArrayList;
+            }
+            ArrayList<View> result = new ArrayList<View>();
+            ViewGroup viewGroup = (ViewGroup) v;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                ArrayList<View> viewArrayList = new ArrayList<View>();
+                viewArrayList.add(v);
+                viewArrayList.addAll(getAllChildren(child));
+                result.addAll(viewArrayList);
+            }
+            return result;
         }
-
     }
 
-    public ArrayList<BaseBean> getList() {
+    public ArrayList<T> getList() {
         return mList;
     }
 
@@ -84,7 +94,7 @@ public abstract class LayouModelAdapter extends RecyclerView.Adapter {
         return super.getItemViewType(position);
     }
 
-    public void setList(ArrayList<BaseBean> list) {
+    public void setList(ArrayList<T> list) {
         mList = list;
         notifyDataSetChanged();
     }
@@ -94,13 +104,13 @@ public abstract class LayouModelAdapter extends RecyclerView.Adapter {
         notifyItemRemoved(index);
     }
 
-    public boolean addAll(ArrayList<BaseBean> list) {
+    public boolean addAll(ArrayList<T> list) {
         boolean result = mList.addAll(list);
         notifyDataSetChanged();
         return result;
     }
 
-    public void add(BaseBean data) {
+    public void add(T data) {
         mList.add(data);
         notifyDataSetChanged();
     }
@@ -114,41 +124,119 @@ public abstract class LayouModelAdapter extends RecyclerView.Adapter {
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public XHolder onCreateViewHolder(@NonNull ViewGroup parent, int layoutId) {
         if (context == null) {
             context = parent.getContext();
         }
         if (inflater == null) {
             inflater = LayoutInflater.from(context);
         }
-        View view = inflater.inflate(viewType, parent, false);
+        View view = inflater.inflate(layoutId, parent, false);
         XHolder holder = new XHolder(view);
-        if (holder != null) {
-            holder.itemView.setTag(holder);
-            holder.itemView.setOnClickListener(onClickListener);
-        }
         return holder;
     }
 
-    protected abstract void onBindViewHolder(XHolder holder, BaseBean baseBean, long position);
+    protected abstract void bindViewHolder(XHolder holder, T baseBean, long position);
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof XHolder) {
-            XHolder xHolder = (XHolder) holder;
-            BaseBean bean = mList.get(position);
-            HashMap<String, Object> map = bean.getData();
-            onBindViewHolder(xHolder, bean, position);
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
+        XHolder xHolder = (XHolder) holder;
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(holder.getAdapterPosition(), holder.itemView);
+                }
+            }
+        });
+
+        if (onClickIds != null) {
+            for (int i = 0; i < onClickIds.size(); i++) {
+                final OnChildItemClickListener itemClickListener = onChildItemClickListeners.get(i);
+                final View v = xHolder.findViewById(onClickIds.get(i));
+                if (v != null) {
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            itemClickListener.onItemClick(holder.getAdapterPosition(), holder.itemView);
+                        }
+                    });
+                }
+            }
         }
+
+        T bean = mList.get(position);
+        bindViewHolder(xHolder, bean, position);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
+    /**
+     * 为子控件添加单击事件
+     *
+     * @param onChildItemClickListener
+     * @param id
+     */
+    public void addChildItemClickListener(int id, OnChildItemClickListener onChildItemClickListener) {
+        checkIdAndLisenter(onChildItemClickListener, id);
+        onClickIds.add(id);
+        onChildItemClickListeners.add(onChildItemClickListener);
+    }
+
+    private void checkIdAndLisenter(OnChildItemClickListener onChildItemClickListener, int id) {
+        if (id == 0 || onChildItemClickListener == null) {
+            new IllegalAccessException("Params is invalidata");
+        }
+    }
+
 
     public interface OnItemClickListener {
-        void onItemClick(int position, long itemId);
+        void onItemClick(int position, View view);
+    }
+
+    public interface OnChildItemClickListener {
+        void onItemClick(int position, View view);
+    }
+
+
+    /**
+     * @ClassName: BaseItem
+     * @Description:适用于LayouModelAdapter
+     * @Author: 范明华
+     * @CreateDate: 2020/9/12 0012 11:15
+     * @Version: 1.0
+     */
+    public static class BaseItem<T> {
+        protected int layoutId;
+        private T data;
+
+        public int getLayoutId() {
+            return layoutId;
+        }
+
+        public void setLayoutId(int layoutId) {
+            this.layoutId = layoutId;
+        }
+
+        public T getData() {
+            return data;
+        }
+
+        public void setData(T data) {
+            this.data = data;
+        }
+
+        public BaseItem(int layoutId, T data) {
+            this.layoutId = layoutId;
+            this.data = data;
+        }
+
+        public BaseItem(T data) {
+            this.data = data;
+        }
+
     }
 
 
