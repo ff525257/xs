@@ -65,7 +65,9 @@ public abstract class LayouModelAdapter<T extends LayouModelAdapter.BaseItem> ex
         private ArrayList<View> getAllChildren(View v) {
             if (!(v instanceof ViewGroup)) {
                 ArrayList<View> viewArrayList = new ArrayList<View>();
-                viewArrayList.add(v);
+                if (v.getId() != View.NO_ID) {
+                    viewArrayList.add(v);
+                }
                 return viewArrayList;
             }
             ArrayList<View> result = new ArrayList<View>();
@@ -73,7 +75,9 @@ public abstract class LayouModelAdapter<T extends LayouModelAdapter.BaseItem> ex
             for (int i = 0; i < viewGroup.getChildCount(); i++) {
                 View child = viewGroup.getChildAt(i);
                 ArrayList<View> viewArrayList = new ArrayList<View>();
-                viewArrayList.add(v);
+                if (v.getId() != View.NO_ID) {
+                    viewArrayList.add(v);
+                }
                 viewArrayList.addAll(getAllChildren(child));
                 result.addAll(viewArrayList);
             }
