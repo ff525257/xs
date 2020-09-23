@@ -6,7 +6,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.wh.R;
-import com.wh.core.layoutmodel.LayouModelAdapter;
+import com.wh.core.view.adapter.LayouModelAdapter;
 
 import java.util.ArrayList;
 
@@ -50,10 +50,36 @@ public class SimpleDialogAdapter extends LayouModelAdapter<SimpleDialogAdapter.I
                     checkBox.setChecked(baseBean.getData().isSelect);
                     break;
             }
-
             holder.setText(R.id.content, baseBean.getData().text);
         }
     }
+
+    /**
+     * 获取选择的下标位置
+     * 先判断是否有头部跟尾部
+     * 从头部开始获取选择下标
+     * 选择的下标位移一个start
+     *
+     * @return
+     */
+    public ArrayList<Integer> getSecelePositions() {
+        int count = getItemCount();
+        if (count > 0) {
+            Item frist = mList.get(0);
+            Item last = mList.get(count - 1);
+            int start = (frist instanceof HeaderItem) ? 1 : 0;
+            int footer = (last instanceof FooterItem) ? 1 : 0;
+
+            ArrayList<Integer> selectIds = new ArrayList<>();
+            for (int i = start; i < count - footer; i++) {
+                if (mList.get(i).getData().isSelect) {
+                    selectIds.add(i - start);
+                }
+            }
+        }
+        return null;
+    }
+
 
     public static class Item extends LayouModelAdapter.BaseItem<ItemObject> {
 
@@ -78,7 +104,14 @@ public class SimpleDialogAdapter extends LayouModelAdapter<SimpleDialogAdapter.I
         }
     }
 
-    public static class VerticalFooterItem extends Item {
+    public static class FooterItem extends Item {
+
+        public FooterItem(ItemObject data) {
+            super(data);
+        }
+    }
+
+    public static class VerticalFooterItem extends FooterItem {
 
         public VerticalFooterItem(ItemObject data) {
             super(data);
@@ -87,7 +120,7 @@ public class SimpleDialogAdapter extends LayouModelAdapter<SimpleDialogAdapter.I
     }
 
 
-    public static class CannleFooterItem extends Item {
+    public static class CannleFooterItem extends FooterItem {
 
         public CannleFooterItem(ItemObject data) {
             super(data);
@@ -95,7 +128,7 @@ public class SimpleDialogAdapter extends LayouModelAdapter<SimpleDialogAdapter.I
         }
     }
 
-    public static class HorizontalFooterItem extends Item {
+    public static class HorizontalFooterItem extends FooterItem {
 
         public HorizontalFooterItem(ItemObject data) {
             super(data);

@@ -1,11 +1,11 @@
-package com.wh.core.model;
+package com.wh.core.mvvm;
 
 import com.wh.core.common.util.LogUtils;
 import com.wh.core.common.util.StringUtils;
 import com.wh.core.controlcenter.ControlCenter;
 import com.wh.core.http.HttpObserver;
 import com.wh.core.http.XoKCall;
-import com.wh.core.mv.ModelView;
+import com.wh.core.mvvm.ModelView;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

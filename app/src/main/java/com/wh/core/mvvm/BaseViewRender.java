@@ -1,4 +1,4 @@
-package com.wh.core.view.render;
+package com.wh.core.mvvm;
 
 import android.content.Context;
 import android.view.View;

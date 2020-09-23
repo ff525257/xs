@@ -45,6 +45,7 @@ public class ControlCenter {
         httpEngine = new HttpEngine();
     }
 
+    private H handler = new H();
 
     public XoKCall requestHttp(String url, String method, HttpObserver aOb, HashMap<String, String> header, HashMap<String, String> body) {
         return requestHttpWithCallBack(url, method, aOb,
@@ -74,8 +75,8 @@ public class ControlCenter {
                                                  final String httpErrorCodeCallBack, final BaseHttpEngine engine,
                                                  boolean isShowAlert, final int id, final HashMap<String, String> header, final HashMap<String, String> resBody) {
         XoKCall cancelable = null;
-        if (!DeviceUtils.isConnected(BaseApplication.getApplicationContext2()) || handObject == null) {
-            return cancelable;
+        if (handObject == null) {
+            new IllegalAccessException("handObject can not is null.");
         }
         handObject.showAlert(isShowAlert, id);
         try {
@@ -139,12 +140,7 @@ public class ControlCenter {
 
     }
 
-
-    /**
-     * 处理httpengin 返回的数据
-     */
-    private Handler handler = new Handler() {
-        @SuppressWarnings("unchecked")
+    private static class H extends Handler {
         public void handleMessage(Message msg) {
             // 消息对象
             HashMap<String, Object> msgObj = (HashMap<String, Object>) msg.obj;
@@ -221,6 +217,6 @@ public class ControlCenter {
             }
             ob.hideAlert(id);
         }
-    };
+    }
 
 }

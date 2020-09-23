@@ -1,7 +1,7 @@
 package com.wh.core.business.login;
 
 import com.wh.core.http.HttpObserver;
-import com.wh.core.model.BaseModel;
+import com.wh.core.mvvm.BaseModel;
 
 
 public class WhModel extends BaseModel {

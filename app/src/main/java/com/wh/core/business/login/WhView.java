@@ -6,8 +6,7 @@ import android.widget.TextView;
 
 import com.wh.R;
 import com.wh.core.inject.ViewId;
-import com.wh.core.mv.ModelView;
-import com.wh.core.view.render.BaseViewRender;
+import com.wh.core.mvvm.BaseViewRender;
 
 import java.util.HashMap;
 

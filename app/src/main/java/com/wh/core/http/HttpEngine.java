@@ -54,9 +54,9 @@ public class HttpEngine extends BaseHttpEngine {
                 if (body instanceof JsonHashMap) {
                     LogUtils.i(TAG, "httpSend body[jsontype] :" + ((JsonHashMap) body).getStringData());
                     requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), ((JsonHashMap) body).getStringData());
-                } else if (body instanceof FileHashMap) {
+                } else if (body instanceof FileUpLoadHMap) {
                     MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-                    HashMap<String, Object> fileDatas = ((FileHashMap) body).getFileData();
+                    HashMap<String, Object> fileDatas = ((FileUpLoadHMap) body).getFileData();
                     for (Map.Entry<String, Object> entry : fileDatas.entrySet()) {
                         String fileName = entry.getKey();
                         String filePath = entry.getValue().toString();
@@ -98,8 +98,8 @@ public class HttpEngine extends BaseHttpEngine {
                 public void onResponse(Call call, Response response) throws IOException {
                     int code = response.code();
                     xcall.setStatus(XoKCall.FINISH);
-                    if (body instanceof DownloadHashMap) {
-                        HashMap<String, Object> downMap = ((DownloadHashMap) body).getDownloadFileData();
+                    if (body instanceof DownloadMap) {
+                        HashMap<String, Object> downMap = ((DownloadMap) body).getDownloadFileData();
                         InputStream is = null;
                         byte[] buf = new byte[2048];
                         int len = 0;

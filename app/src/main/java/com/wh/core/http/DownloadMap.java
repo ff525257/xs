@@ -11,9 +11,9 @@ import java.util.HashMap;
 /**
  * 下载格式
  */
-public class DownloadHashMap extends HashMap<String, String> {
+public class DownloadMap extends HashMap<String, String> {
 
-    public DownloadHashMap(String dir, String fileName) {
+    public DownloadMap(String dir, String fileName) {
         try {
             HashMap<String, Object> content = new HashMap<>();
             content.put(BaseConfig.Http.KEY_FILENAME, fileName);

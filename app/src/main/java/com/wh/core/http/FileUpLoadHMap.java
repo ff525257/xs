@@ -11,14 +11,14 @@ import java.util.HashMap;
 /**
  * 上传格式
  */
-public class FileHashMap extends HashMap<String, String> {
+public class FileUpLoadHMap extends HashMap<String, String> {
 
     /**
      * key是文件名称,
      * value是文件地址
      * @param content
      */
-    public FileHashMap(final HashMap<String, Object> content) {
+    public FileUpLoadHMap(final HashMap<String, Object> content) {
         try {
             put(BaseConfig.Http.FILETYPE, JSONUtil.mapToJson(content));
         } catch (JSONException e) {

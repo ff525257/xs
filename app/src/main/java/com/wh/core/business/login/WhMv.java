@@ -5,12 +5,12 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.wh.R;
-import com.wh.core.layoutmodel.LayouModelAdapter;
-import com.wh.core.mv.ModelView;
-import com.wh.core.xdialog.SimpleDialogAdapter;
+import com.wh.core.mvvm.ModelView;
+import com.wh.core.view.adapter.LayouModelAdapter;
 import com.wh.core.xdialog.XDialog;
 
 import java.util.HashMap;
+
 
 public class WhMv extends ModelView<WhModel, WhView> {
 
@@ -29,12 +29,13 @@ public class WhMv extends ModelView<WhModel, WhView> {
     public void renderLogin(HashMap<String, String> result) {
         //((WhModel) mModel).login(result.get("usernmae"), result.get("password"), "refreshUi", this);
         d = new XDialog.DialogBuilder().setSize(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT).setContentBackgroundResource(R.color.colorPrimary).
-                setGravity(Gravity.BOTTOM).setDialog("111", new String[]{"111", "22222"}, SimpleDialogAdapter.SelectType.RADIO, XDialog.FooterType.HORIZONTAL, new LayouModelAdapter.OnChildItemClickListener() {
-            @Override
-            public void onItemClick(int position, View view) {
-                d.dismiss();
-            }
-        }).create(mRender.getRootView().getContext());
+                setGravity(Gravity.BOTTOM).setPadding(11,11,11,11).
+                setDialog_Checkbox("111", new String[]{"111", "22222"}, XDialog.FooterType.HORIZONTAL, new LayouModelAdapter.OnChildItemClickListener() {
+                    @Override
+                    public void onItemClick(int position, View view) {
+
+                    }
+                }).create(mRender.getRootView().getContext());
         d.show();
     }
 

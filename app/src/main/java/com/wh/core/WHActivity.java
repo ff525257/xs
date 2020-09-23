@@ -1,11 +1,10 @@
 package com.wh.core;
 
 import android.app.Activity;
-import android.view.View;
 import android.os.Bundle;
 
 import com.wh.core.common.util.InjectManager;
-import com.wh.core.mv.ModelView;
+import com.wh.core.mvvm.ModelView;
 
 public abstract class WHActivity<MV extends ModelView> extends Activity {
 
@@ -16,19 +15,11 @@ public abstract class WHActivity<MV extends ModelView> extends Activity {
         mModelView = initModelView();
         setContentView(mModelView.getRootView());
 
+        //注解
         InjectManager.inject(this);
     }
 
     public abstract MV initModelView();
-
-    public ModelView getModelView() {
-        return mModelView;
-    }
-
-
-    public <T extends View> T findViewById2(int resid) {
-        return (T) findViewById(resid);
-    }
 
 
     @Override
@@ -36,6 +27,47 @@ public abstract class WHActivity<MV extends ModelView> extends Activity {
         super.onDestroy();
         if (mModelView != null) {
             mModelView.onDestroy();
+        }
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mModelView != null) {
+            mModelView.onStart();
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (mModelView != null) {
+            mModelView.onRestart();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mModelView != null) {
+            mModelView.onResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mModelView != null) {
+            mModelView.onPause();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mModelView != null) {
+            mModelView.onStop();
         }
     }
 }

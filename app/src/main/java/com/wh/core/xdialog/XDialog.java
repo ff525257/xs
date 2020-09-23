@@ -14,7 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.wh.R;
-import com.wh.core.layoutmodel.LayouModelAdapter;
+import com.wh.core.view.adapter.LayouModelAdapter;
 
 import java.util.ArrayList;
 
@@ -28,8 +28,8 @@ public class XDialog extends Dialog {
     private RecyclerView recyclerView;
     private ViewGroup rootView;
 
-    public XDialog(Context context, DialogBuilder builder) {
-        super(context, R.style.DialogStyle);
+    public XDialog(Context context, DialogBuilder builder, int theme) {
+        super(context, theme);
         mContext = context;
         mBuilder = builder;
     }
@@ -65,11 +65,14 @@ public class XDialog extends Dialog {
         window.setGravity(mBuilder.gravity);
         setCanceledOnTouchOutside(mBuilder.isCancelable);
 
+
+        rootView.setPadding(mBuilder.mUserPaddingLeft, mBuilder.mUserPaddingTop, mBuilder.mUserPaddingRight, mBuilder.mUserPaddingBottom);
+
         window.setAttributes(lp);
 
         initContentView(mBuilder.adapter);
         if (mBuilder.contentBackgroundResource != 0) {
-            rootView.setBackgroundResource(mBuilder.contentBackgroundResource);
+            recyclerView.setBackgroundResource(mBuilder.contentBackgroundResource);
         }
         setOnDismissListener(mBuilder.dismissListener);
         setOnShowListener(mBuilder.showListener);
@@ -91,6 +94,7 @@ public class XDialog extends Dialog {
                 dismiss();
             }
         });
+
     }
 
     public enum FooterType {
@@ -107,8 +111,12 @@ public class XDialog extends Dialog {
         public DialogInterface.OnDismissListener dismissListener;
         public DialogInterface.OnShowListener showListener;
         public int animat_resId;
-        //回调ID
-        public int callbackId;
+
+
+        public int mUserPaddingBottom;
+        public int mUserPaddingLeft;
+        public int mUserPaddingTop;
+        public int mUserPaddingRight;
 
         public DialogBuilder setSize(int width, int height) {
             this.width = width;
@@ -116,13 +124,17 @@ public class XDialog extends Dialog {
             return this;
         }
 
-        public DialogBuilder setDismissListener(DialogInterface.OnDismissListener dismissListener) {
-            this.dismissListener = dismissListener;
+        public DialogBuilder setPadding(int left, int top, int right, int bottom) {
+            this.mUserPaddingLeft = left;
+            this.mUserPaddingTop = top;
+            this.mUserPaddingRight = right;
+            this.mUserPaddingBottom = bottom;
             return this;
         }
 
-        public void setCallbackId(int callbackId) {
-            this.callbackId = callbackId;
+        public DialogBuilder setDismissListener(DialogInterface.OnDismissListener dismissListener) {
+            this.dismissListener = dismissListener;
+            return this;
         }
 
         public DialogBuilder setShowListener(DialogInterface.OnShowListener showListener) {
@@ -139,6 +151,22 @@ public class XDialog extends Dialog {
             return setDialog(title, contents, SimpleDialogAdapter.SelectType.NO, type, okClickListener);
         }
 
+        public DialogBuilder setDialog_Radio(String title, String[] contents, FooterType type, LayouModelAdapter.OnChildItemClickListener okClickListener) {
+            return setDialog(title, contents, SimpleDialogAdapter.SelectType.RADIO, type, okClickListener);
+        }
+
+        public DialogBuilder setDialog_Checkbox(String title, String[] contents, FooterType type, LayouModelAdapter.OnChildItemClickListener okClickListener) {
+            return setDialog(title, contents, SimpleDialogAdapter.SelectType.CHECKBOX, type, okClickListener);
+        }
+
+        /**
+         * @param title           标题
+         * @param contents        内容
+         * @param selectType      可选模式,支持单选,多选
+         * @param type            脚步显示控件,支持下上,左右,单取消
+         * @param okClickListener 确定监听
+         * @return
+         */
         public DialogBuilder setDialog(final String title, String[] contents, SimpleDialogAdapter.SelectType selectType, FooterType type, LayouModelAdapter.OnChildItemClickListener okClickListener) {
 
             final ArrayList<SimpleDialogAdapter.Item> list = new ArrayList<>(0);
@@ -165,7 +193,7 @@ public class XDialog extends Dialog {
                 }
             }
 
-            //STEP2 脚部
+            //STEP3 脚部
             {
                 SimpleDialogAdapter.ItemObject footerObj = new SimpleDialogAdapter.ItemObject();
                 SimpleDialogAdapter.Item footer = null;
@@ -183,6 +211,7 @@ public class XDialog extends Dialog {
 
                 list.add(footer);
             }
+            //起始位置
             final int startIndex = !TextUtils.isEmpty(title) ? 1 : 0;
 
             final SimpleDialogAdapter adapter = new SimpleDialogAdapter(list);
@@ -194,14 +223,14 @@ public class XDialog extends Dialog {
                     adapter.addChildItemClickListener(R.id.checkBox, new LayouModelAdapter.OnChildItemClickListener() {
                         @Override
                         public void onItemClick(int position, View view) {
-                            list.get(position).getData().isSelect = true;
+                            list.get(position).getData().isSelect = !list.get(position).getData().isSelect;
                         }
                     });
 
                     adapter.setOnItemClickListener(new LayouModelAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(int position, View view) {
-                            list.get(position).getData().isSelect = true;
+                            list.get(position).getData().isSelect = !list.get(position).getData().isSelect;
                             adapter.notifyItemChanged(position);
                         }
                     });
@@ -241,6 +270,21 @@ public class XDialog extends Dialog {
             return this;
         }
 
+        /**
+         * 只支持SimpleDialogAdapter获取选中下标
+         *
+         * @return
+         */
+        public ArrayList<Integer> getSimpleSecelePositions() {
+            if (adapter != null) {
+                if (adapter instanceof SimpleDialogAdapter) {
+                    return ((SimpleDialogAdapter) adapter).getSecelePositions();
+                } else {
+                    new IllegalAccessException("not support:" + adapter.toString());
+                }
+            }
+            return null;
+        }
 
         public DialogBuilder setWindowAnimations(int animat_resId) {
             this.animat_resId = animat_resId;
@@ -264,7 +308,12 @@ public class XDialog extends Dialog {
 
 
         public XDialog create(Context context) {
-            XDialog dialog = new XDialog(context, this);
+            XDialog dialog = new XDialog(context, this, R.style.DialogStyle);
+            return dialog;
+        }
+
+        public XDialog create(Context context, int theme) {
+            XDialog dialog = new XDialog(context, this, theme);
             return dialog;
         }
 

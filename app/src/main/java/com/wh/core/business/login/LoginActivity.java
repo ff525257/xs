@@ -8,9 +8,4 @@ public class LoginActivity extends WHActivity<WhMv> {
     public WhMv initModelView() {
         return new WhMv(new WhModel(), new WhView(this));
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
 }

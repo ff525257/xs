@@ -1,10 +1,8 @@
-package com.wh.core.mv;
+package com.wh.core.mvvm;
 
 import android.view.View;
 
 import com.wh.core.http.HttpObserver;
-import com.wh.core.model.BaseModel;
-import com.wh.core.view.render.BaseViewRender;
 
 import java.util.HashMap;
 
@@ -71,5 +69,20 @@ public abstract class ModelView<M extends BaseModel, V extends BaseViewRender> i
     @Override
     public void onProgress(long current, long total, int id, HashMap<String, String> body) {
 
+    }
+
+    public void onStart() {
+    }
+
+    public void onRestart() {
+    }
+
+    public void onResume() {
+    }
+
+    public void onPause() {
+    }
+
+    public void onStop() {
     }
 }

@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import com.wh.core.WHActivity;
 import com.wh.core.inject.ViewId;
-import com.wh.core.view.render.BaseViewRender;
+import com.wh.core.mvvm.BaseViewRender;
 
 import java.lang.reflect.Field;
 

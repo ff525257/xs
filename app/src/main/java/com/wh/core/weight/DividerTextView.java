@@ -5,11 +5,15 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import com.wh.R;
 
-public class DividerTextView extends TextView {
+/**
+ * 带线的textview
+ * 可设置线颜色以及高度
+ * 支持上下以及上下都带线
+ */
+public class DividerTextView extends android.support.v7.widget.AppCompatTextView {
 
     public static final short TOP = 1;
     public static final short BOTTOM = 2;
