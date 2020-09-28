@@ -24,7 +24,7 @@ public class DividerTextView extends android.support.v7.widget.AppCompatTextView
      *
      * @param showLine
      */
-    public void setShowLine_notInvalidate(boolean showLine) {
+    public void setShowLineNoInval(boolean showLine) {
         if (showLine != isShowLine) {
             isShowLine = showLine;
         }
@@ -56,7 +56,7 @@ public class DividerTextView extends android.support.v7.widget.AppCompatTextView
         showStyle = a.getInt(R.styleable.DividerTextView_showStyle, showStyle);
         a.recycle();
 
-        if (showStyle != -1) {
+        if (showStyle != -1 && lineWidth > 0) {
             paint = new Paint();
             paint.setColor(lineColor);
             paint.setAntiAlias(true);

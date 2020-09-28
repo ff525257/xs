@@ -1,11 +1,10 @@
 package com.wh.core.mvvm;
 
 import com.wh.core.common.util.LogUtils;
-import com.wh.core.common.util.StringUtils;
+import com.wh.core.common.util.XStringUtils;
 import com.wh.core.controlcenter.ControlCenter;
 import com.wh.core.http.HttpObserver;
 import com.wh.core.http.XoKCall;
-import com.wh.core.mvvm.ModelView;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public abstract class BaseModel{
         Method callbackMethod = null;
         try {
             // 回调
-            callbackMethod = mv.getClass().getMethod("model" + StringUtils.fristToUpString(callBackMethod), Object.class, Integer.class);
+            callbackMethod = mv.getClass().getMethod("model" + XStringUtils.fristToUpString(callBackMethod), Object.class, Integer.class);
             callbackMethod.invoke(mv, resultData, id);
         } catch (Exception e) {
             LogUtils.w(TAG, "Exception ", e);

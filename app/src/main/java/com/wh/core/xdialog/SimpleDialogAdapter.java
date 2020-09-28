@@ -1,7 +1,11 @@
 package com.wh.core.xdialog;
 
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -12,45 +16,97 @@ import java.util.ArrayList;
 
 public class SimpleDialogAdapter extends LayouModelAdapter<SimpleDialogAdapter.Item> {
 
+    private XTextWatcher watcher;
 
     public SimpleDialogAdapter(ArrayList<Item> list) {
         super(list);
     }
 
     @Override
-    protected void bindViewHolder(XHolder holder, Item baseBean, long position) {
-        if (baseBean instanceof HeaderItem) {
+    protected void bindViewHolder(XHolder holder, Item item, long position) {
+        //内容
+        if (item instanceof ContentItem) {
+            if (item instanceof EditContentItem) {
+                EditText title = holder.findViewById(R.id.edit);
+                setTextContent(title, item.getData());
+                if (watcher == null) {
+                    watcher = new XTextWatcher(item.getData());
+                } else {
+                    title.removeTextChangedListener(watcher);
+                }
+                title.addTextChangedListener(watcher);
+            } else {
+                if (item.getData().icon == 0) {
+                    holder.findViewById(R.id.icon).setVisibility(View.GONE);
+                }
+                switch (item.getData().selectType) {
+                    case NO:
+                        holder.findViewById(R.id.checkBox).setVisibility(View.VISIBLE);
+                        holder.findViewById(R.id.radio).setVisibility(View.VISIBLE);
+                        break;
+                    case RADIO:
+                        holder.findViewById(R.id.checkBox).setVisibility(View.GONE);
+                        RadioButton radioButton = holder.findViewById(R.id.radio);
+                        radioButton.setVisibility(View.VISIBLE);
+                        radioButton.setChecked(item.getData().isSelect);
+                        break;
+                    case CHECKBOX:
+                        holder.findViewById(R.id.radio).setVisibility(View.GONE);
+                        CheckBox checkBox = holder.findViewById(R.id.checkBox);
+                        checkBox.setVisibility(View.VISIBLE);
+                        checkBox.setChecked(item.getData().isSelect);
+                        break;
+                }
+                setTextContent((TextView) holder.findViewById(R.id.content), item.getData());
+            }
+        } else if (item instanceof HeaderItem) {
             TextView title = (TextView) (holder.itemView);
-            title.setText(baseBean.getData().text);
-            if (baseBean.getData().textColor != 0) {
-                title.setTextColor(baseBean.getData().textColor);
+            setTextContent(title, item.getData());
+        } else if (item instanceof LoadingItem) {
+            if (!TextUtils.isEmpty(item.getData().content)) {
+                setTextContent((TextView) holder.findViewById(R.id.loading_title), item.getData());
             }
-            if (baseBean.getData().gravity != 0) {
-                title.setGravity(baseBean.getData().gravity);
-            }
-        } else if (baseBean instanceof ContentItem) {
-            if (baseBean.getData().icon == 0) {
-                holder.findViewById(R.id.icon).setVisibility(View.GONE);
-            }
-            switch (baseBean.getData().selectType) {
-                case NO:
-                    holder.findViewById(R.id.checkBox).setVisibility(View.VISIBLE);
-                    holder.findViewById(R.id.radio).setVisibility(View.VISIBLE);
-                    break;
-                case RADIO:
-                    holder.findViewById(R.id.checkBox).setVisibility(View.GONE);
-                    RadioButton radioButton = holder.findViewById(R.id.radio);
-                    radioButton.setVisibility(View.VISIBLE);
-                    radioButton.setChecked(baseBean.getData().isSelect);
-                    break;
-                case CHECKBOX:
-                    holder.findViewById(R.id.radio).setVisibility(View.GONE);
-                    CheckBox checkBox = holder.findViewById(R.id.checkBox);
-                    checkBox.setVisibility(View.VISIBLE);
-                    checkBox.setChecked(baseBean.getData().isSelect);
-                    break;
-            }
-            holder.setText(R.id.content, baseBean.getData().text);
+        }
+    }
+
+    private class XTextWatcher implements TextWatcher {
+        private ItemObject itemObject;
+
+        public XTextWatcher(ItemObject itemObject) {
+            this.itemObject = itemObject;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            itemObject.content = s.toString();
+        }
+    }
+
+    private void setTextContent(TextView textView, ItemObject itemObject) {
+        if (!TextUtils.isEmpty(itemObject.content)) {
+            textView.setText(itemObject.content);
+        }
+        if (!TextUtils.isEmpty(itemObject.description)) {
+            textView.setHint(itemObject.description);
+        }
+        if (itemObject.textColor > 0) {
+            textView.setTextColor(itemObject.textColor);
+        }
+        if (itemObject.textSize > 0) {
+            textView.setTextSize(itemObject.textSize);
+        }
+        if (itemObject.gravity > 0) {
+            textView.setGravity(itemObject.gravity);
         }
     }
 
@@ -70,12 +126,28 @@ public class SimpleDialogAdapter extends LayouModelAdapter<SimpleDialogAdapter.I
             int start = (frist instanceof HeaderItem) ? 1 : 0;
             int footer = (last instanceof FooterItem) ? 1 : 0;
 
-            ArrayList<Integer> selectIds = new ArrayList<>();
+            ArrayList<Integer> selectIds = new ArrayList<>(count - start - footer);
             for (int i = start; i < count - footer; i++) {
                 if (mList.get(i).getData().isSelect) {
                     selectIds.add(i - start);
                 }
             }
+        }
+        return null;
+    }
+
+
+    /**
+     * 返回数据框内容
+     *
+     * @return
+     */
+    public String getEdittext() {
+        int count = getItemCount();
+        if (count > 0) {
+            Item frist = mList.get(0);
+            int start = (frist instanceof HeaderItem) ? 1 : 0;
+            return mList.get(start).getData().content;
         }
         return null;
     }
@@ -101,6 +173,14 @@ public class SimpleDialogAdapter extends LayouModelAdapter<SimpleDialogAdapter.I
         public ContentItem(ItemObject data) {
             super(data);
             layoutId = R.layout.simple_content;
+        }
+    }
+
+    public static class EditContentItem extends ContentItem {
+
+        public EditContentItem(ItemObject data) {
+            super(data);
+            layoutId = R.layout.simple_content_edit;
         }
     }
 
@@ -136,6 +216,15 @@ public class SimpleDialogAdapter extends LayouModelAdapter<SimpleDialogAdapter.I
         }
     }
 
+
+    public static class LoadingItem extends Item {
+
+        public LoadingItem(ItemObject data) {
+            super(data);
+            layoutId = R.layout.simple_loading;
+        }
+    }
+
     public enum SelectType {
         NO, CHECKBOX, RADIO
     }
@@ -145,12 +234,37 @@ public class SimpleDialogAdapter extends LayouModelAdapter<SimpleDialogAdapter.I
      * item 描述
      */
     public static class ItemObject {
-        public String text;
+        /**
+         * 内容
+         */
+        public String content;
+        /**
+         * 内容字体颜色
+         */
         public int textColor;
+        /**
+         * 内容字体大小
+         */
+        public int textSize;
+        /**
+         * 描述
+         */
+        public String description;
+        /**
+         * 内容方位
+         */
         public int gravity;
+        /**
+         * 图标
+         */
         public int icon;
+        /**
+         * 选择形式
+         */
         public SelectType selectType = SelectType.NO;
-        //是否选中
+        /**
+         * 是否选中
+         */
         public boolean isSelect;
     }
 

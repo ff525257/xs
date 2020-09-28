@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="?android:listPreferredItemPaddingLeft"
+        android:paddingTop="@dimen/dimen_10"
+        android:background="@null"
+        android:paddingRight="?android:listPreferredItemPaddingRight"
+        android:paddingBottom="@dimen/dimen_10"
+        android:textSize="@dimen/font_size_15" />
+</LinearLayout>

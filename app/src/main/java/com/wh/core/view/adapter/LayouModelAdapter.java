@@ -32,7 +32,7 @@ public abstract class LayouModelAdapter<T extends LayouModelAdapter.BaseItem> ex
     }
 
 
-    public class XHolder extends RecyclerView.ViewHolder {
+    public static class XHolder extends RecyclerView.ViewHolder {
         private ArrayList<View> viewList;
 
         public XHolder(View itemView) {

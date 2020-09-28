@@ -18,7 +18,11 @@ import com.wh.core.view.adapter.LayouModelAdapter;
 
 import java.util.ArrayList;
 
-
+/**
+ * @author fmh
+ * 为了统一请采用LayouModelAdapter做适配器
+ * 尾部的footer布局,请使用R.id.cannle，默认为cannle加上了点击取消事件
+ */
 public class XDialog extends Dialog {
 
     protected Context mContext;
@@ -77,8 +81,8 @@ public class XDialog extends Dialog {
         setOnDismissListener(mBuilder.dismissListener);
         setOnShowListener(mBuilder.showListener);
 
-        if (mBuilder.animat_resId != 0) {
-            window.setWindowAnimations(mBuilder.animat_resId);
+        if (mBuilder.animation_resId != 0) {
+            window.setWindowAnimations(mBuilder.animation_resId);
         }
     }
 
@@ -101,16 +105,21 @@ public class XDialog extends Dialog {
         NO, HORIZONTAL, VERTICAL, SINGLE
     }
 
+    public interface OkClickLisenter {
+        //三种情况,选中,下标,输出框
+        void clickOK(ArrayList<Integer> selectsId, int position, String editText);
+    }
+
     public static class DialogBuilder {
         public int width;
         public int height;
         public int gravity = Gravity.BOTTOM;
         public boolean isCancelable = true;
-        public int contentBackgroundResource;
+        public int contentBackgroundResource = android.R.color.white;
         public LayouModelAdapter adapter;
         public DialogInterface.OnDismissListener dismissListener;
         public DialogInterface.OnShowListener showListener;
-        public int animat_resId;
+        public int animation_resId;
 
 
         public int mUserPaddingBottom;
@@ -147,15 +156,49 @@ public class XDialog extends Dialog {
             return this;
         }
 
-        public DialogBuilder setDialog(String title, String[] contents, FooterType type, LayouModelAdapter.OnChildItemClickListener okClickListener) {
+
+        public DialogBuilder setEdit(String title, String hint, FooterType type, final OkClickLisenter lisenter) {
+            final ArrayList<SimpleDialogAdapter.Item> list = new ArrayList<>(0);
+            initHeader(title, list);
+
+            SimpleDialogAdapter.ItemObject itemObject = new SimpleDialogAdapter.ItemObject();
+            itemObject.description = hint;
+            list.add(new SimpleDialogAdapter.EditContentItem(itemObject));
+
+            initFooter(type, list);
+            final SimpleDialogAdapter adapter = new SimpleDialogAdapter(list);
+
+            adapter.addChildItemClickListener(R.id.ok, new LayouModelAdapter.OnChildItemClickListener() {
+                @Override
+                public void onItemClick(int position, View view) {
+                    if (lisenter != null) {
+                        lisenter.clickOK(null, position, adapter.getEdittext());
+                    }
+                }
+            });
+            setAdapter(adapter);
+            return this;
+        }
+
+        public DialogBuilder setLoading(String title) {
+            final ArrayList<SimpleDialogAdapter.Item> list = new ArrayList<>(0);
+            SimpleDialogAdapter.ItemObject itemObject = new SimpleDialogAdapter.ItemObject();
+            itemObject.content = title;
+            list.add(new SimpleDialogAdapter.LoadingItem(itemObject));
+            final SimpleDialogAdapter adapter = new SimpleDialogAdapter(list);
+            setAdapter(adapter);
+            return this;
+        }
+
+        public DialogBuilder setDialog(String title, String[] contents, FooterType type, OkClickLisenter okClickListener) {
             return setDialog(title, contents, SimpleDialogAdapter.SelectType.NO, type, okClickListener);
         }
 
-        public DialogBuilder setDialog_Radio(String title, String[] contents, FooterType type, LayouModelAdapter.OnChildItemClickListener okClickListener) {
+        public DialogBuilder setDialogRadio(String title, String[] contents, FooterType type, OkClickLisenter okClickListener) {
             return setDialog(title, contents, SimpleDialogAdapter.SelectType.RADIO, type, okClickListener);
         }
 
-        public DialogBuilder setDialog_Checkbox(String title, String[] contents, FooterType type, LayouModelAdapter.OnChildItemClickListener okClickListener) {
+        public DialogBuilder setDialogCheckbox(String title, String[] contents, FooterType type, OkClickLisenter okClickListener) {
             return setDialog(title, contents, SimpleDialogAdapter.SelectType.CHECKBOX, type, okClickListener);
         }
 
@@ -164,59 +207,31 @@ public class XDialog extends Dialog {
          * @param contents        内容
          * @param selectType      可选模式,支持单选,多选
          * @param type            脚步显示控件,支持下上,左右,单取消
-         * @param okClickListener 确定监听
+         * @param okClickListener listitem确定监听
          * @return
          */
-        public DialogBuilder setDialog(final String title, String[] contents, SimpleDialogAdapter.SelectType selectType, FooterType type, LayouModelAdapter.OnChildItemClickListener okClickListener) {
+        public DialogBuilder setDialog(final String title, String[] contents, SimpleDialogAdapter.SelectType selectType, FooterType type, final OkClickLisenter okClickListener) {
 
             final ArrayList<SimpleDialogAdapter.Item> list = new ArrayList<>(0);
-            //STEP1  头部
-            {
-                if (!TextUtils.isEmpty(title)) {
-                    SimpleDialogAdapter.ItemObject headerObj = new SimpleDialogAdapter.ItemObject();
-                    headerObj.text = title;
-                    SimpleDialogAdapter.Item header = new SimpleDialogAdapter.HeaderItem(headerObj);
-                    list.add(header);
-                }
-            }
+            initHeader(title, list);
 
-            //STEP2 内容
-            {
-                if (contents != null && contents.length != 0) {
-                    for (String obj : contents) {
-                        SimpleDialogAdapter.ItemObject headerObj = new SimpleDialogAdapter.ItemObject();
-                        headerObj.text = obj;
-                        headerObj.selectType = selectType;
-                        SimpleDialogAdapter.Item content = new SimpleDialogAdapter.ContentItem(headerObj);
-                        list.add(content);
-                    }
-                }
-            }
+            initContentList(contents, selectType, list);
 
-            //STEP3 脚部
-            {
-                SimpleDialogAdapter.ItemObject footerObj = new SimpleDialogAdapter.ItemObject();
-                SimpleDialogAdapter.Item footer = null;
-                switch (type) {
-                    case SINGLE:
-                        footer = new SimpleDialogAdapter.CannleFooterItem(footerObj);
-                        break;
-                    case HORIZONTAL:
-                        footer = new SimpleDialogAdapter.HorizontalFooterItem(footerObj);
-                        break;
-                    case VERTICAL:
-                        footer = new SimpleDialogAdapter.VerticalFooterItem(footerObj);
-                        break;
-                }
+            initFooter(type, list);
 
-                list.add(footer);
-            }
             //起始位置
             final int startIndex = !TextUtils.isEmpty(title) ? 1 : 0;
 
             final SimpleDialogAdapter adapter = new SimpleDialogAdapter(list);
 
-            adapter.addChildItemClickListener(R.id.ok, okClickListener);
+            adapter.addChildItemClickListener(R.id.ok, new LayouModelAdapter.OnChildItemClickListener() {
+                @Override
+                public void onItemClick(int position, View view) {
+                    if (okClickListener != null) {
+                        okClickListener.clickOK(adapter.getSecelePositions(), position - startIndex, null);
+                    }
+                }
+            });
 
             switch (selectType) {
                 case CHECKBOX:
@@ -271,11 +286,69 @@ public class XDialog extends Dialog {
         }
 
         /**
+         * 初始化中间内容数据
+         *
+         * @param contents
+         * @param selectType
+         * @param list
+         */
+        private void initContentList(String[] contents, SimpleDialogAdapter.SelectType selectType, ArrayList<SimpleDialogAdapter.Item> list) {
+            if (contents != null && contents.length != 0) {
+                for (String obj : contents) {
+                    SimpleDialogAdapter.ItemObject headerObj = new SimpleDialogAdapter.ItemObject();
+                    headerObj.content = obj;
+                    headerObj.selectType = selectType;
+                    SimpleDialogAdapter.Item content = new SimpleDialogAdapter.ContentItem(headerObj);
+                    list.add(content);
+                }
+            }
+        }
+
+        /**
+         * 初始化尾部
+         *
+         * @param type
+         * @param list
+         */
+        private void initFooter(FooterType type, ArrayList<SimpleDialogAdapter.Item> list) {
+            SimpleDialogAdapter.ItemObject footerObj = new SimpleDialogAdapter.ItemObject();
+            SimpleDialogAdapter.Item footer = null;
+            switch (type) {
+                case SINGLE:
+                    footer = new SimpleDialogAdapter.CannleFooterItem(footerObj);
+                    break;
+                case HORIZONTAL:
+                    footer = new SimpleDialogAdapter.HorizontalFooterItem(footerObj);
+                    break;
+                case VERTICAL:
+                    footer = new SimpleDialogAdapter.VerticalFooterItem(footerObj);
+                    break;
+            }
+
+            list.add(footer);
+        }
+
+        /**
+         * 初始化头部
+         *
+         * @param title
+         * @param list
+         */
+        private void initHeader(String title, ArrayList<SimpleDialogAdapter.Item> list) {
+            if (!TextUtils.isEmpty(title)) {
+                SimpleDialogAdapter.ItemObject headerObj = new SimpleDialogAdapter.ItemObject();
+                headerObj.content = title;
+                SimpleDialogAdapter.Item header = new SimpleDialogAdapter.HeaderItem(headerObj);
+                list.add(header);
+            }
+        }
+
+        /**
          * 只支持SimpleDialogAdapter获取选中下标
          *
          * @return
          */
-        public ArrayList<Integer> getSimpleSecelePositions() {
+        private ArrayList<Integer> getSimpleSecelePositions() {
             if (adapter != null) {
                 if (adapter instanceof SimpleDialogAdapter) {
                     return ((SimpleDialogAdapter) adapter).getSecelePositions();
@@ -286,8 +359,8 @@ public class XDialog extends Dialog {
             return null;
         }
 
-        public DialogBuilder setWindowAnimations(int animat_resId) {
-            this.animat_resId = animat_resId;
+        public DialogBuilder setWindowAnimations(int animation_resId) {
+            this.animation_resId = animation_resId;
             return this;
         }
 

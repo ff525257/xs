@@ -154,19 +154,17 @@ public class RoundImageView extends AppCompatImageView {
                     canvas.drawRoundRect(mRectBitmap, bitmapRadius, bitmapRadius, mPaintBitmap);
 
 
-                    if ((cornerTopLeftRadius + cornerTopRightRadius + cornerBottomLeftRadius + cornerBottomRightRadius) > 0) {
-                        if (cornerTopLeftRadius == 0) {
-                            clipTopLeft(canvas, mPaintBitmap, (int) bitmapRadius, (int) mRectBitmap.width(), (int) mRectBitmap.height());
-                        }
-                        if (cornerTopRightRadius == 0) {
-                            clipTopRight(canvas, mPaintBitmap, (int) bitmapRadius, (int) mRectBitmap.width(), (int) mRectBitmap.height());
-                        }
-                        if (cornerBottomLeftRadius == 0) {
-                            clipBottomLeft(canvas, mPaintBitmap, (int) bitmapRadius, (int) mRectBitmap.width(), (int) mRectBitmap.height());
-                        }
-                        if (cornerBottomRightRadius == 0) {
-                            clipBottomRight(canvas, mPaintBitmap, (int) bitmapRadius, (int) mRectBitmap.width(), (int) mRectBitmap.height());
-                        }
+                    if (cornerTopLeftRadius == 0) {
+                        clipTopLeft(canvas, mPaintBitmap, (int) bitmapRadius, (int) mRectBitmap.width(), (int) mRectBitmap.height());
+                    }
+                    if (cornerTopRightRadius == 0) {
+                        clipTopRight(canvas, mPaintBitmap, (int) bitmapRadius, (int) mRectBitmap.width(), (int) mRectBitmap.height());
+                    }
+                    if (cornerBottomLeftRadius == 0) {
+                        clipBottomLeft(canvas, mPaintBitmap, (int) bitmapRadius, (int) mRectBitmap.width(), (int) mRectBitmap.height());
+                    }
+                    if (cornerBottomRightRadius == 0) {
+                        clipBottomRight(canvas, mPaintBitmap, (int) bitmapRadius, (int) mRectBitmap.width(), (int) mRectBitmap.height());
                     }
                 }
                 if (!TextUtils.isEmpty(mText)) {

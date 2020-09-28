@@ -3,4 +3,28 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+
+    <!--白色-->
+    <color name="white">#ffffff</color>
+    <!--黑色-->
+    <color name="black">#000000</color>
+    <!--黑色-->
+    <color name="black_01">#AAA7A7</color>
+    <!--淡黄色-->
+    <color name="light_yellow">#f9a64a</color>
+    <!--墨绿色-->
+    <color name="dark_green">#3cbdc8</color>
+    <!--透明-->
+    <color name="transparent">#00000000</color>
+    <color name="color_01">#ad8e7a</color>
+    <!--灰色-->
+    <color name="gray">#e6e7e9</color>
+    <color name="gray_01">#f6f2f1</color>
+    <color name="gray_02">#f6f2f1</color>
+    <color name="gray_03">#f6f2f1</color>
+    <!--绿色-->
+    <color name="green">#009154</color>
+    <color name="green_01">#78edad</color>
+
 </resources>

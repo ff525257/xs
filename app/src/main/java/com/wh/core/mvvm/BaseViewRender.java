@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.wh.core.common.util.InjectManager;
 import com.wh.core.common.util.LogUtils;
-import com.wh.core.common.util.StringUtils;
+import com.wh.core.common.util.XStringUtils;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -67,7 +67,7 @@ public abstract class BaseViewRender {
         Method callbackMethod = null;
         try {
             // 回调
-            callbackMethod = callBack.getClass().getMethod("render" + StringUtils.fristToUpString(callBackMethod), HashMap.class);
+            callbackMethod = callBack.getClass().getMethod("render" + XStringUtils.fristToUpString(callBackMethod), HashMap.class);
             callbackMethod.invoke(callBack, result);
         } catch (Exception e) {
             LogUtils.w(TAG, "Exception ", e);

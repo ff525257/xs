@@ -6,12 +6,9 @@ import java.util.Map;
 
 import org.json.JSONException;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
-import com.wh.core.BaseApplication;
-import com.wh.core.common.util.DeviceUtils;
 import com.wh.core.common.util.JSONUtil;
 import com.wh.core.common.util.LogUtils;
 import com.wh.core.config.BaseConfig;
