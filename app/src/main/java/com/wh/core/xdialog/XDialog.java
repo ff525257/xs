@@ -115,7 +115,7 @@ public class XDialog extends Dialog {
         public int height;
         public int gravity = Gravity.BOTTOM;
         public boolean isCancelable = true;
-        public int contentBackgroundResource = android.R.color.white;
+        public int contentBackgroundResource;
         public LayouModelAdapter adapter;
         public DialogInterface.OnDismissListener dismissListener;
         public DialogInterface.OnShowListener showListener;
@@ -156,7 +156,15 @@ public class XDialog extends Dialog {
             return this;
         }
 
-
+        /**
+         * 带输入框的dialog
+         *
+         * @param title    标题
+         * @param hint     提示
+         * @param type     尾部类型
+         * @param lisenter 确认回调
+         * @return
+         */
         public DialogBuilder setEdit(String title, String hint, FooterType type, final OkClickLisenter lisenter) {
             final ArrayList<SimpleDialogAdapter.Item> list = new ArrayList<>(0);
             initHeader(title, list);
@@ -180,6 +188,12 @@ public class XDialog extends Dialog {
             return this;
         }
 
+        /**
+         * 加载进度框
+         *
+         * @param title 标题
+         * @return
+         */
         public DialogBuilder setLoading(String title) {
             final ArrayList<SimpleDialogAdapter.Item> list = new ArrayList<>(0);
             SimpleDialogAdapter.ItemObject itemObject = new SimpleDialogAdapter.ItemObject();
@@ -190,14 +204,42 @@ public class XDialog extends Dialog {
             return this;
         }
 
+        /**
+         * 普通的dialog
+         *
+         * @param title           标题
+         * @param contents        可选内容列表
+         * @param type            底部UI
+         * @param okClickListener 确认回调
+         * @return
+         */
         public DialogBuilder setDialog(String title, String[] contents, FooterType type, OkClickLisenter okClickListener) {
             return setDialog(title, contents, SimpleDialogAdapter.SelectType.NO, type, okClickListener);
         }
 
+
+        /**
+         * 带单选的dialog
+         *
+         * @param title           标题
+         * @param contents        可选内容列表
+         * @param type            底部UI
+         * @param okClickListener 确认回调  返回选中数据{@link #getSimpleSecelePositions}
+         * @return
+         */
         public DialogBuilder setDialogRadio(String title, String[] contents, FooterType type, OkClickLisenter okClickListener) {
             return setDialog(title, contents, SimpleDialogAdapter.SelectType.RADIO, type, okClickListener);
         }
 
+        /**
+         * 带多选的dialog
+         *
+         * @param title           标题
+         * @param contents        可选内容列表
+         * @param type            底部UI
+         * @param okClickListener 确认回调  返回选中数据{@link #getSimpleSecelePositions}
+         * @return
+         */
         public DialogBuilder setDialogCheckbox(String title, String[] contents, FooterType type, OkClickLisenter okClickListener) {
             return setDialog(title, contents, SimpleDialogAdapter.SelectType.CHECKBOX, type, okClickListener);
         }

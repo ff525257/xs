@@ -18,12 +18,13 @@ import java.util.ArrayList;
  * @CreateDate: 2020/9/12 0012 11:15
  * @Version: 1.0
  */
-public abstract class LayouModelAdapter<T extends LayouModelAdapter.BaseItem> extends RecyclerView.Adapter {
+public abstract class LayouModelAdapter<T extends LayouModelAdapter.BaseItem> extends RecyclerView.Adapter<LayouModelAdapter.XHolder> {
 
     protected ArrayList<T> mList;
     protected Context context;
     private LayoutInflater inflater;
     private OnItemClickListener onItemClickListener;
+    private OnLongItemClickListener onLongItemClickListener;
     private ArrayList<OnChildItemClickListener> onChildItemClickListeners = new ArrayList<>(0);
     private ArrayList<Integer> onClickIds = new ArrayList<>(0);
 
@@ -107,10 +108,9 @@ public abstract class LayouModelAdapter<T extends LayouModelAdapter.BaseItem> ex
         notifyItemRemoved(index);
     }
 
-    public boolean addAll(ArrayList<T> list) {
-        boolean result = mList.addAll(list);
+    public void addAll(ArrayList<T> list) {
+        mList.addAll(list);
         notifyDataSetChanged();
-        return result;
     }
 
     public void add(T data) {
@@ -142,14 +142,23 @@ public abstract class LayouModelAdapter<T extends LayouModelAdapter.BaseItem> ex
     protected abstract void bindViewHolder(XHolder holder, T baseBean, long position);
 
     @Override
-    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
-        XHolder xHolder = (XHolder) holder;
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+    public void onBindViewHolder(@NonNull final XHolder xHolder, final int position) {
+        xHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onItemClickListener != null) {
-                    onItemClickListener.onItemClick(holder.getAdapterPosition(), holder.itemView);
+                    onItemClickListener.onItemClick(xHolder.getAdapterPosition(), xHolder.itemView);
                 }
+            }
+        });
+
+        xHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (onLongItemClickListener != null) {
+                    onLongItemClickListener.onLongItemClick(xHolder.getAdapterPosition(), xHolder.itemView);
+                }
+                return false;
             }
         });
 
@@ -161,7 +170,7 @@ public abstract class LayouModelAdapter<T extends LayouModelAdapter.BaseItem> ex
                     v.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            itemClickListener.onItemClick(holder.getAdapterPosition(), holder.itemView);
+                            itemClickListener.onItemClick(xHolder.getAdapterPosition(), xHolder.itemView);
                         }
                     });
                 }
@@ -174,6 +183,10 @@ public abstract class LayouModelAdapter<T extends LayouModelAdapter.BaseItem> ex
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
+    }
+
+    public void setOnLongItemClickListener(OnLongItemClickListener onLongItemClickListener) {
+        this.onLongItemClickListener = onLongItemClickListener;
     }
 
     /**
@@ -197,6 +210,10 @@ public abstract class LayouModelAdapter<T extends LayouModelAdapter.BaseItem> ex
 
     public interface OnItemClickListener {
         void onItemClick(int position, View view);
+    }
+
+    public interface OnLongItemClickListener {
+        void onLongItemClick(int position, View view);
     }
 
     public interface OnChildItemClickListener {

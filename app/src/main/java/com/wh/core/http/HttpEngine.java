@@ -24,6 +24,9 @@ import okhttp3.Response;
 import com.wh.core.common.util.LogUtils;
 import com.wh.core.common.util.XStringUtils;
 import com.wh.core.config.BaseConfig;
+import com.wh.core.http.reqeusttype.DownloadMap;
+import com.wh.core.http.reqeusttype.FileUpLoadHMap;
+import com.wh.core.http.reqeusttype.JsonHashMap;
 
 
 /**

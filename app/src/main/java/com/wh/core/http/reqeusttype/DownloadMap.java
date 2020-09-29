@@ -1,4 +1,4 @@
-package com.wh.core.http;
+package com.wh.core.http.reqeusttype;
 
 import com.wh.core.common.util.JSONUtil;
 import com.wh.core.common.util.LogUtils;
