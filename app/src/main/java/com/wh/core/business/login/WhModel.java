@@ -1,8 +1,7 @@
 package com.wh.core.business.login;
 
-import com.wh.core.http.HttpObserver;
-import com.wh.core.mvvm.BaseModel;
-
+import com.fast.fastxs.http.HttpObserver;
+import com.fast.fastxs.mvvm.BaseModel;
 
 public class WhModel extends BaseModel {
     public static final int LOGIN_ID = 0x01;

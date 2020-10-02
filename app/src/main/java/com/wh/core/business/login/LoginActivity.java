@@ -1,6 +1,7 @@
 package com.wh.core.business.login;
 
-import com.wh.core.WHActivity;
+
+import com.fast.fastxs.WHActivity;
 
 public class LoginActivity extends WHActivity<WhMv> {
 
