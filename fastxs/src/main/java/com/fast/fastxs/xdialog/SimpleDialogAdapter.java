@@ -11,11 +11,11 @@ import android.widget.TextView;
 
 
 import com.fast.fastxs.R;
-import com.fast.fastxs.adapter.LayouModelAdapter;
+import com.fast.fastxs.adapter.LayoutModelAdapter;
 
 import java.util.ArrayList;
 
-public class SimpleDialogAdapter extends LayouModelAdapter<SimpleDialogAdapter.Item> {
+public class SimpleDialogAdapter extends LayoutModelAdapter<SimpleDialogAdapter.Item> {
 
     private XTextWatcher watcher;
 
@@ -42,8 +42,8 @@ public class SimpleDialogAdapter extends LayouModelAdapter<SimpleDialogAdapter.I
                 }
                 switch (item.getData().selectType) {
                     case NO:
-                        holder.getView(R.id.checkBox).setVisibility(View.VISIBLE);
-                        holder.getView(R.id.radio).setVisibility(View.VISIBLE);
+                        holder.getView(R.id.checkBox).setVisibility(View.GONE);
+                        holder.getView(R.id.radio).setVisibility(View.GONE);
                         break;
                     case RADIO:
                         holder.getView(R.id.checkBox).setVisibility(View.GONE);
@@ -154,7 +154,7 @@ public class SimpleDialogAdapter extends LayouModelAdapter<SimpleDialogAdapter.I
     }
 
 
-    public static class Item extends LayouModelAdapter.BaseItem<ItemObject> {
+    public static class Item extends LayoutModelAdapter.BaseItem<ItemObject> {
 
         public Item(ItemObject data) {
             super(data);

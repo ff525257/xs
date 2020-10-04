@@ -2,19 +2,18 @@ package com.fast.fastxs.util;
 
 import android.app.Activity;
 
-import com.fast.fastxs.WHActivity;
 import com.fast.fastxs.inject.ViewId;
-import com.fast.fastxs.mvvm.BaseViewRender;
+import com.fast.fastxs.mvvm.XsBaseViewRender;
 
 import java.lang.reflect.Field;
 
 public class InjectManager {
 
-    public static void inject(WHActivity activity) {
+    public static void inject(Activity activity) {
         injectViewId(activity);
     }
 
-    private static void injectViewId(WHActivity activity) {
+    private static void injectViewId(Activity activity) {
         Class<? extends Activity> clazz = activity.getClass();
         //查询当前的所有的字段
         Field[] fields = clazz.getDeclaredFields();
@@ -35,12 +34,12 @@ public class InjectManager {
         }
     }
 
-    public static void inject(BaseViewRender render) {
+    public static void inject(XsBaseViewRender render) {
         injectViewId(render);
     }
 
-    private static void injectViewId(BaseViewRender render) {
-        Class<? extends BaseViewRender> clazz = render.getClass();
+    private static void injectViewId(XsBaseViewRender render) {
+        Class<? extends XsBaseViewRender> clazz = render.getClass();
         //查询当前的所有的字段
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {

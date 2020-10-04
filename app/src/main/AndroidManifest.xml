@@ -1,9 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wh">
+    package="com.fastxs.simple">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    
 
     <application
         android:allowBackup="true"
@@ -12,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".core.business.login.LoginActivity">
+        <activity android:name="com.fastxs.simple.business.login.LoginActivity" />
+        <activity android:name="com.fastxs.simple.business.dialog.DialogActivity" />
+        <activity android:name="com.fastxs.simple.business.functionlist.FunctionActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

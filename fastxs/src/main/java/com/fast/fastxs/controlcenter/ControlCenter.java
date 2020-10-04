@@ -25,7 +25,7 @@ public class ControlCenter {
     /**
      * 用于普通通信
      */
-    private HttpEngine httpEngine = null;// 发送通信的请求普通引擎
+    private HttpEngine httpEngine = null;
 
     /**
      * 获取控制中心的对象
@@ -45,33 +45,31 @@ public class ControlCenter {
 
     private H handler = new H();
 
-    public XoKCall requestHttp(String url, String method, HttpObserver aOb, HashMap<String, String> header, HashMap<String, String> body) {
+    public XoKCall requestHttp(String url, BaseConfig.Http.Method method, HttpObserver aOb, HashMap<String, String> header, HashMap<String, String> body) {
         return requestHttpWithCallBack(url, method, aOb,
                 BaseConfig.Http.DEFHTTPSEUUCESSMETHOD, BaseConfig.Http.DEFHTTPERRMETHOD, true, BaseConfig.Http.REQ_DEF_ID, header, body);
     }
 
 
-    public XoKCall requestHttp(String url, String method, HttpObserver aOb, int id, HashMap<String, String> header, HashMap<String, String> body) {
+    public XoKCall requestHttp(String url, BaseConfig.Http.Method method, HttpObserver aOb, int id, HashMap<String, String> header, HashMap<String, String> body) {
         return requestHttpWithCallBack(url, method, aOb,
                 BaseConfig.Http.DEFHTTPSEUUCESSMETHOD, BaseConfig.Http.DEFHTTPERRMETHOD, true, id, header, body);
     }
 
-    public XoKCall requestHttp(String url, String method, HttpObserver aOb, boolean isShowAlert, int id, HashMap<String, String> header, HashMap<String, String> body) {
+    public XoKCall requestHttp(String url, BaseConfig.Http.Method method, HttpObserver aOb, boolean isShowAlert, int id, HashMap<String, String> header, HashMap<String, String> body) {
         return requestHttpWithCallBack(url, method, aOb,
                 BaseConfig.Http.DEFHTTPSEUUCESSMETHOD, BaseConfig.Http.DEFHTTPERRMETHOD, isShowAlert, id, header, body);
     }
 
-    public XoKCall requestHttpWithCallBack(String url, String method, HttpObserver handObject, String successCallBackMethod, String httpErrorCodeCallBack, boolean isShowAlert, int id, HashMap<String, String> header, HashMap<String, String> body) {
-
+    public XoKCall requestHttpWithCallBack(String url, BaseConfig.Http.Method method, HttpObserver handObject, String successCallBackMethod, String httpErrorCodeCallBack, boolean isShowAlert, int id, HashMap<String, String> header, HashMap<String, String> body) {
         return requestHttpWithCallBackInner(url, method,
                 handObject, successCallBackMethod, httpErrorCodeCallBack,
                 httpEngine, isShowAlert, id, header, body);
-
     }
 
-    private XoKCall requestHttpWithCallBackInner(final String url, final String method, final HttpObserver handObject, final String successCallBackMethod,
+    private XoKCall requestHttpWithCallBackInner(final String url, final BaseConfig.Http.Method method, final HttpObserver handObject, final String successCallBackMethod,
                                                  final String httpErrorCodeCallBack, final BaseHttpEngine engine,
-                                                 boolean isShowAlert, final int id, final HashMap<String, String> header, final HashMap<String, String> resBody) {
+                                                 boolean isShowAlert, final int id, HashMap<String, String> header, HashMap<String, String> resBody) {
         XoKCall cancelable = null;
         if (handObject == null) {
             new IllegalAccessException("handObject can not is null.");
@@ -80,27 +78,36 @@ public class ControlCenter {
         try {
             final Map<String, Object> resultMap = new HashMap<String, Object>();
             resultMap.put(BaseConfig.Http.HTTP_OBSERVER, handObject);
+            resultMap.put(BaseConfig.Http.HTTP_KEY_REQ_BOY, resBody);
+            resultMap.put(BaseConfig.Http.HTTP_KEY_REQ_ID, id);
+            //check header and body
+            if (header == null) {
+                header = new HashMap<>();
+            }
+            if (resBody == null) {
+                resBody = new HashMap<>();
+            }
             cancelable = engine.httpSend(url, method, header, resBody, new XhttpCallback() {
 
                 @Override
-                public void onResponse(String body, int code) {
+                public void onResponse(String result, int code) {
                     if (code == BaseConfig.Http.HTTP_SUCCESS_CODE) {
-                        String str = body;
-                        LogUtils.i(TAG, "response:" + str);
+                        LogUtils.i(TAG, "response:" + result);
                         Object resultData = null;
                         try {
-                            resultData = JSONUtil.parseJsonResponse(str);
+                            resultData = JSONUtil.parseJsonResponse(result);
+                            resultMap.put(BaseConfig.Http.HTTP_KEY_RESULT_DATA, resultData);
+                            resultMap.put(BaseConfig.Http.HTTP_KEY_CALL_BACK_METHOD, successCallBackMethod);
                         } catch (JSONException e) {
                             LogUtils.w(TAG, "parseJsonResponse error", e);
+                            resultMap.put(BaseConfig.Http.HTTP_KEY_RESULT_DATA, BaseConfig.Http.HTTP_PARSE_ERR);
+                            resultMap.put(BaseConfig.Http.HTTP_KEY_CALL_BACK_METHOD, httpErrorCodeCallBack);
                         }
-                        resultMap.put(BaseConfig.Http.HTTP_KEY_RESULT_DATA, resultData);
-                        resultMap.put(BaseConfig.Http.HTTP_KEY_CALL_BACK_METHOD, successCallBackMethod);
+
                     } else {
                         resultMap.put(BaseConfig.Http.HTTP_KEY_RESULT_DATA, code);// 结果数据
                         resultMap.put(BaseConfig.Http.HTTP_KEY_CALL_BACK_METHOD, httpErrorCodeCallBack);
                     }
-                    resultMap.put(BaseConfig.Http.HTTP_KEY_REQ_ID, id);
-                    resultMap.put(BaseConfig.Http.HTTP_KEY_REQ_BOY, resBody);
                     Message msg = handler.obtainMessage(
                             BaseConfig.Http.HTTP_SECCESS, resultMap);
                     handler.sendMessage(msg);
@@ -111,8 +118,6 @@ public class ControlCenter {
                     LogUtils.d(TAG, "onProgress  total:" + total + " current:" + current);
                     resultMap.put(BaseConfig.Http.HTTP_KEY_RESULT_CURRENT, current);
                     resultMap.put(BaseConfig.Http.HTTP_KEY_RESULT_TOTAL, total);
-                    resultMap.put(BaseConfig.Http.HTTP_KEY_REQ_ID, id);
-                    resultMap.put(BaseConfig.Http.HTTP_KEY_REQ_BOY, resBody);
                     Message msg = handler.obtainMessage(
                             BaseConfig.Http.HTTP_PROGRESS, resultMap);
                     handler.sendMessage(msg);
@@ -123,8 +128,7 @@ public class ControlCenter {
                     LogUtils.d(TAG, "onFailure:" + e);
                     resultMap.put(BaseConfig.Http.HTTP_KEY_RESULT_DATA, BaseConfig.Http.HTTP_IO_ERR);
                     resultMap.put(BaseConfig.Http.HTTP_KEY_CALL_BACK_METHOD, httpErrorCodeCallBack);
-                    resultMap.put(BaseConfig.Http.HTTP_KEY_REQ_ID, id);
-                    resultMap.put(BaseConfig.Http.HTTP_KEY_REQ_BOY, resBody);
+
                     Message msg = handler.obtainMessage(
                             BaseConfig.Http.HTTP_ERR, resultMap);
                     handler.sendMessage(msg);

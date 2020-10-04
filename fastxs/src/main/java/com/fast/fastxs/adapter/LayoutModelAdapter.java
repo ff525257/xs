@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * @Author: 范明华
  * @Version: 1.0
  */
-public abstract class LayouModelAdapter<T extends LayouModelAdapter.BaseItem> extends RecyclerView.Adapter<LayouModelAdapter.XHolder> {
+public abstract class LayoutModelAdapter<T extends LayoutModelAdapter.BaseItem> extends RecyclerView.Adapter<LayoutModelAdapter.XHolder> {
 
     protected ArrayList<T> mList;
     protected Context context;
@@ -28,7 +28,7 @@ public abstract class LayouModelAdapter<T extends LayouModelAdapter.BaseItem> ex
     private ArrayList<OnChildItemClickListener> onChildItemClickListeners = new ArrayList<>(0);
     private ArrayList<Integer> onClickIds = new ArrayList<>(0);
 
-    public LayouModelAdapter(@NonNull ArrayList<T> list) {
+    public LayoutModelAdapter(@NonNull ArrayList<T> list) {
         this.mList = list;
     }
 

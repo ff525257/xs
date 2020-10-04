@@ -7,7 +7,7 @@ android {
     def USER_HOST = '"http://192.168.1.81:8080/1111"'
     def DEBUG_HOST = '"http://192.168.1.81:8080/1111"'
     defaultConfig {
-        applicationId "com.wh"
+        applicationId "com.fastxs.simple"
         minSdkVersion 15
         targetSdkVersion 29
         versionCode 1
@@ -34,6 +34,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':fastxs')
+
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
 
     testImplementation 'junit:junit:4.12'
     implementation 'android.arch.persistence.room:runtime:1.0.0'

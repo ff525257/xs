@@ -4,11 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.fast.fastxs.weight.CustomBarbar
-        android:id="@+id/titleBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
+   <include layout="@layout/commonbar"/>
     <EditText
         android:id="@+id/editText"
         android:layout_width="match_parent"

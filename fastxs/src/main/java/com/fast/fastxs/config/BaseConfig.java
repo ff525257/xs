@@ -3,10 +3,11 @@ package com.fast.fastxs.config;
 public class BaseConfig {
     public static final String DEFAULT_ENCODE = "uft-8";
 
-    public static class Http{
+    public static class Http {
 
-        public static final String HTTP_METHOD_POST = "post";
-        public static final String HTTP_METHOD_GET = "get";
+        public enum Method{
+            POST,GET
+        }
 
         public static final String KEY_FILENAME = "fileName";
         public static final String KEY_FILEPATH = "filePath";
@@ -35,15 +36,29 @@ public class BaseConfig {
         public static final String ERR_MSG = "msg";
         public static final String CODE = "code";
 
+        /**
+         * 请求ID，主要是做区别连接
+         */
         public static final String HTTP_KEY_REQ_ID = "req_id";
+        /**
+         * 请求body参数
+         */
         public static final String HTTP_KEY_REQ_BOY = "req_boy";
 
         public static final String HTTP_OBSERVER = "observer";
         public static final String HTTP_KEY_RESULT_DATA = "resultData";
         public static final String HTTP_KEY_CALL_BACK_METHOD = "callBackMethod";
 
+        /**
+         * 默认id
+         */
         public static final int REQ_DEF_ID = 0x01;
+        /**
+         * http成功值
+         */
         public static final int HTTP_SUCCESS_CODE = 200;
         public static final int HTTP_IO_ERR = 1000;
+        public static final int HTTP_PARSE_ERR = 1001;
+        public static final int CONNECTTIMEOUT  = 20*1000;
     }
 }

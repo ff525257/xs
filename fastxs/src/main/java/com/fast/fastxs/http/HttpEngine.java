@@ -1,6 +1,5 @@
 package com.fast.fastxs.http;
 
-
 import com.fast.fastxs.config.BaseConfig;
 import com.fast.fastxs.http.reqeusttype.DownloadMap;
 import com.fast.fastxs.http.reqeusttype.FileUpLoadHMap;
@@ -15,6 +14,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -36,51 +36,51 @@ public class HttpEngine extends BaseHttpEngine {
     private static final String TAG = "HttpEngine";
 
     /**
-     * @param url     发送通信的地址
-     * @param method  GET POST 代表当前发送的是get或者post请求
+     * @param url    发送通信的地址
+     * @param method GET POST 代表当前发送的是get或者post请求
      */
-    public XoKCall httpSend(final String url, String method, final HashMap<String, String> header, final HashMap<String, String> body, final XhttpCallback callback)
+    public XoKCall httpSend(final String url, BaseConfig.Http.Method method, final HashMap<String, String> header, final HashMap<String, String> body, final XhttpCallback callback)
             throws Exception {
         final XoKCall xcall = new XoKCall();
         Request request = null;
-        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().connectTimeout(BaseConfig.Http.CONNECTTIMEOUT, TimeUnit.MILLISECONDS).build();
         try {
             LogUtils.w(TAG, "HttpEngine " + " httpSend  url= " + url + " start");
             LogUtils.i(TAG, "httpSend url:" + url);
             LogUtils.i(TAG, "httpSend header:" + header.toString());
 
             Headers headers = Headers.of(header);
-            if (BaseConfig.Http.HTTP_METHOD_POST.equals(method)) {
+            if (BaseConfig.Http.Method.POST == method) {
                 RequestBody requestBody = null;
-                request = new Request.Builder().headers(headers).url(url).post(requestBody).build();
                 if (body instanceof JsonHashMap) {
                     LogUtils.i(TAG, "httpSend body[jsontype] :" + ((JsonHashMap) body).getStringData());
                     requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), ((JsonHashMap) body).getStringData());
                 } else if (body instanceof FileUpLoadHMap) {
-                    MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+                    MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
                     HashMap<String, Object> fileDatas = ((FileUpLoadHMap) body).getFileData();
                     for (Map.Entry<String, Object> entry : fileDatas.entrySet()) {
                         String fileName = entry.getKey();
                         String filePath = entry.getValue().toString();
-                        builder.addFormDataPart("file", fileName, RequestBody.create(MediaType.parse("application/octet-stream"), new File(filePath)));
+                        multipartBodyBuilder.addFormDataPart("file", fileName, RequestBody.create(MediaType.parse("application/octet-stream"), new File(filePath)));
                     }
                     LogUtils.i(TAG, "httpSend body[filetype] :" + fileDatas.toString());
-                    requestBody = builder.build();
+                    requestBody = multipartBodyBuilder.build();
                     requestBody = new ProgressRequestBody(requestBody, callback);
                 } else {
                     LogUtils.i(TAG, "httpSend body[generaltype] :" + body.toString());
-                    FormBody.Builder builder = new FormBody.Builder();
+                    FormBody.Builder formBodyBuilder = new FormBody.Builder();
                     Iterator iter = body.entrySet().iterator();
                     while (iter.hasNext()) {
                         Map.Entry entry = (Map.Entry) iter.next();
                         if (entry.getKey() != null && entry.getValue() != null) {
                             String key = entry.getKey().toString();
                             String val = entry.getValue().toString();
-                            builder.add(key, val);
+                            formBodyBuilder.add(key, val);
                         }
                     }
-                    requestBody = builder.build();
+                    requestBody = formBodyBuilder.build();
                 }
+                request = new Request.Builder().headers(headers).url(url).post(requestBody).build();
             } else {
                 LogUtils.i(TAG, "httpSend body[get] :" + body.toString());
                 request = new Request.Builder().headers(headers).url(XStringUtils.addParamsToHttpUrl(url, body)).build();

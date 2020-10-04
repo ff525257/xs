@@ -15,7 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.fast.fastxs.R;
-import com.fast.fastxs.adapter.LayouModelAdapter;
+import com.fast.fastxs.adapter.LayoutModelAdapter;
 
 import java.util.ArrayList;
 
@@ -87,13 +87,13 @@ public class XDialog extends Dialog {
         }
     }
 
-    private void initContentView(LayouModelAdapter adapter) {
+    private void initContentView(LayoutModelAdapter adapter) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
 
-        adapter.addChildItemClickListener(R.id.cannle, new LayouModelAdapter.OnChildItemClickListener() {
+        adapter.addChildItemClickListener(R.id.cannle, new LayoutModelAdapter.OnChildItemClickListener() {
             @Override
             public void onItemClick(int position, View view) {
                 dismiss();
@@ -117,7 +117,7 @@ public class XDialog extends Dialog {
         public int gravity = Gravity.BOTTOM;
         public boolean isCancelable = true;
         public Drawable contentBackground;
-        public LayouModelAdapter adapter;
+        public LayoutModelAdapter adapter;
         public OnDismissListener dismissListener;
         public OnShowListener showListener;
         public int animation_resId;
@@ -152,7 +152,7 @@ public class XDialog extends Dialog {
             return this;
         }
 
-        public DialogBuilder setAdapter(LayouModelAdapter adapter) {
+        public DialogBuilder setAdapter(LayoutModelAdapter adapter) {
             this.adapter = adapter;
             return this;
         }
@@ -177,7 +177,7 @@ public class XDialog extends Dialog {
             initFooter(type, list);
             final SimpleDialogAdapter adapter = new SimpleDialogAdapter(list);
 
-            adapter.addChildItemClickListener(R.id.ok, new LayouModelAdapter.OnChildItemClickListener() {
+            adapter.addChildItemClickListener(R.id.ok, new LayoutModelAdapter.OnChildItemClickListener() {
                 @Override
                 public void onItemClick(int position, View view) {
                     if (lisenter != null) {
@@ -267,7 +267,7 @@ public class XDialog extends Dialog {
 
             final SimpleDialogAdapter adapter = new SimpleDialogAdapter(list);
 
-            adapter.addChildItemClickListener(R.id.ok, new LayouModelAdapter.OnChildItemClickListener() {
+            adapter.addChildItemClickListener(R.id.ok, new LayoutModelAdapter.OnChildItemClickListener() {
                 @Override
                 public void onItemClick(int position, View view) {
                     if (okClickListener != null) {
@@ -278,14 +278,14 @@ public class XDialog extends Dialog {
 
             switch (selectType) {
                 case CHECKBOX:
-                    adapter.addChildItemClickListener(R.id.checkBox, new LayouModelAdapter.OnChildItemClickListener() {
+                    adapter.addChildItemClickListener(R.id.checkBox, new LayoutModelAdapter.OnChildItemClickListener() {
                         @Override
                         public void onItemClick(int position, View view) {
                             list.get(position).getData().isSelect = !list.get(position).getData().isSelect;
                         }
                     });
 
-                    adapter.setOnItemClickListener(new LayouModelAdapter.OnItemClickListener() {
+                    adapter.setOnItemClickListener(new LayoutModelAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(int position, View view) {
                             list.get(position).getData().isSelect = !list.get(position).getData().isSelect;
@@ -295,7 +295,7 @@ public class XDialog extends Dialog {
 
                     break;
                 case RADIO:
-                    final LayouModelAdapter.OnItemClickListener itemClickListener = new LayouModelAdapter.OnItemClickListener() {
+                    final LayoutModelAdapter.OnItemClickListener itemClickListener = new LayoutModelAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(int position, View view) {
                             if (position < startIndex) {
@@ -311,7 +311,7 @@ public class XDialog extends Dialog {
                             adapter.notifyDataSetChanged();
                         }
                     };
-                    adapter.addChildItemClickListener(R.id.radio, new LayouModelAdapter.OnChildItemClickListener() {
+                    adapter.addChildItemClickListener(R.id.radio, new LayoutModelAdapter.OnChildItemClickListener() {
                         @Override
                         public void onItemClick(int position, View view) {
                             itemClickListener.onItemClick(position, view);

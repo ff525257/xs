@@ -21,7 +21,7 @@ public abstract class BaseHttpEngine {
     /**
      * 方法功能说明：发送http请求，根据传回来的参数method的不同，判断调用httpGet或者httpPost方法
      */
-    public abstract XoKCall httpSend(String url, String method, final HashMap<String, String> header, final HashMap<String, String> body, XhttpCallback callback)
+    public abstract XoKCall httpSend(String url, BaseConfig.Http.Method method, final HashMap<String, String> header, final HashMap<String, String> body, XhttpCallback callback)
             throws Exception;
 
 
