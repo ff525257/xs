@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 
 import com.fast.fastxs.R;
+import com.fast.fastxs.adapter.BaseItem;
 import com.fast.fastxs.adapter.LayoutModelAdapter;
 
 import java.util.ArrayList;
@@ -154,7 +155,7 @@ public class SimpleDialogAdapter extends LayoutModelAdapter<SimpleDialogAdapter.
     }
 
 
-    public static class Item extends LayoutModelAdapter.BaseItem<ItemObject> {
+    public static class Item extends BaseItem<ItemObject> {
 
         public Item(ItemObject data) {
             super(data);

@@ -2,9 +2,10 @@ package com.fastxs.simple.adapter;
 
 import android.support.annotation.NonNull;
 
+import com.fast.fastxs.adapter.BaseItem;
 import com.fast.fastxs.adapter.LayoutModelAdapter;
+import com.fast.fastxs.adapter.dataobj.GeneralListObj;
 import com.fastxs.simple.R;
-import com.fastxs.simple.adapter.dataobj.GeneralListObj;
 
 import java.util.ArrayList;
 
@@ -19,7 +20,7 @@ public class DialogListAdapter extends LayoutModelAdapter<DialogListAdapter.Dial
         holder.setText(R.id.text, baseBean.getData().title);
     }
 
-    public static class DialogItem extends LayoutModelAdapter.BaseItem<GeneralListObj<String>> {
+    public static class DialogItem extends BaseItem<GeneralListObj<String>> {
 
         public DialogItem(GeneralListObj data) {
             super(data);

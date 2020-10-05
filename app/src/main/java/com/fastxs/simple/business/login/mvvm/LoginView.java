@@ -1,16 +1,16 @@
-package com.fastxs.simple.business.login;
+package com.fastxs.simple.business.login.mvvm;
 
 import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
 import com.fast.fastxs.inject.ViewId;
-import com.fastxs.simple.BaseView;
+import com.fast.fastxs.mvvm.XsBaseViewRender;
 import com.fastxs.simple.R;
 
 import java.util.HashMap;
 
-public class LoginView extends BaseView {
+public class LoginView extends XsBaseViewRender {
 
     @ViewId(R.id.editText)
     private TextView text1;

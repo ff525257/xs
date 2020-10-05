@@ -1,4 +1,4 @@
-package com.fastxs.simple.business.dialog;
+package com.fastxs.simple.business.dialog.mvvm;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,18 +9,18 @@ import android.widget.Toast;
 
 import com.fast.fastxs.adapter.LayoutModelAdapter;
 import com.fast.fastxs.adapter.SpaceItemDecoration;
+import com.fast.fastxs.adapter.dataobj.GeneralListObj;
 import com.fast.fastxs.drawable.RoundDrawable;
 import com.fast.fastxs.inject.ViewId;
+import com.fast.fastxs.mvvm.XsBaseViewRender;
 import com.fast.fastxs.util.DeviceUtils;
 import com.fast.fastxs.xdialog.XDialog;
-import com.fastxs.simple.BaseView;
 import com.fastxs.simple.R;
 import com.fastxs.simple.adapter.DialogListAdapter;
-import com.fastxs.simple.adapter.dataobj.GeneralListObj;
 
 import java.util.ArrayList;
 
-public class DialogView extends BaseView {
+public class DialogView extends XsBaseViewRender {
 
     @ViewId(R.id.list)
     private RecyclerView list;

@@ -1,4 +1,4 @@
-package com.fastxs.simple.business.functionlist;
+package com.fastxs.simple.business.functionlist.mvvm;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,18 +9,18 @@ import android.view.View;
 
 import com.fast.fastxs.adapter.LayoutModelAdapter;
 import com.fast.fastxs.adapter.SpaceItemDecoration;
+import com.fast.fastxs.adapter.dataobj.GeneralListObj;
 import com.fast.fastxs.inject.ViewId;
+import com.fast.fastxs.mvvm.XsBaseViewRender;
 import com.fast.fastxs.util.DeviceUtils;
-import com.fastxs.simple.BaseView;
 import com.fastxs.simple.R;
 import com.fastxs.simple.adapter.FunctionAdapter;
-import com.fastxs.simple.adapter.dataobj.GeneralListObj;
 import com.fastxs.simple.business.dialog.DialogActivity;
 import com.fastxs.simple.business.login.LoginActivity;
 
 import java.util.ArrayList;
 
-public class FunctionView extends BaseView {
+public class FunctionView extends XsBaseViewRender {
 
     @ViewId(R.id.list)
     private RecyclerView list;

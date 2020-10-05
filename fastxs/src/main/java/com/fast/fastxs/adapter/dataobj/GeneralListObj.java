@@ -1,4 +1,4 @@
-package com.fastxs.simple.adapter.dataobj;
+package com.fast.fastxs.adapter.dataobj;
 
 /**
  * 普通的列表数据封装

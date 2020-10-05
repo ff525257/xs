@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * @Author: 范明华
  * @Version: 1.0
  */
-public abstract class LayoutModelAdapter<T extends LayoutModelAdapter.BaseItem> extends RecyclerView.Adapter<LayoutModelAdapter.XHolder> {
+public abstract class LayoutModelAdapter<T extends BaseItem> extends RecyclerView.Adapter<LayoutModelAdapter.XHolder> {
 
     protected ArrayList<T> mList;
     protected Context context;
@@ -203,44 +203,6 @@ public abstract class LayoutModelAdapter<T extends LayoutModelAdapter.BaseItem> 
 
     public interface OnChildItemClickListener {
         void onItemClick(int position, View view);
-    }
-
-
-    /**
-     * @ClassName: BaseItem
-     * @Description:适用于LayouModelAdapter
-     * @Author: 范明华
-     * @Version: 1.0
-     */
-    public static class BaseItem<T> {
-        protected int layoutId;
-        private T data;
-
-        public int getLayoutId() {
-            return layoutId;
-        }
-
-        public void setLayoutId(int layoutId) {
-            this.layoutId = layoutId;
-        }
-
-        public T getData() {
-            return data;
-        }
-
-        public void setData(T data) {
-            this.data = data;
-        }
-
-        public BaseItem(int layoutId, T data) {
-            this.layoutId = layoutId;
-            this.data = data;
-        }
-
-        public BaseItem(T data) {
-            this.data = data;
-        }
-
     }
 
 

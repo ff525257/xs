@@ -1,9 +1,9 @@
-package com.fastxs.simple.business.functionlist;
-
-import com.fastxs.simple.BaseModelView;
+package com.fastxs.simple.business.functionlist.mvvm;
 
 
-public class FunctionModelView extends BaseModelView<FunctionModel, FunctionView> {
+import com.fast.fastxs.mvvm.XsBaseModelView;
+
+public class FunctionModelView extends XsBaseModelView<FunctionModel, FunctionView> {
 
 
     public FunctionModelView(FunctionModel baseModel, FunctionView baseView) {

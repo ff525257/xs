@@ -1,11 +1,11 @@
-package com.fastxs.simple.business.login;
+package com.fastxs.simple.business.login.mvvm;
 
-import com.fastxs.simple.BaseModelView;
+import com.fast.fastxs.mvvm.XsBaseModelView;
 
 import java.util.HashMap;
 
 
-public class LoginModelView extends BaseModelView<LoginModel, LoginView> {
+public class LoginModelView extends XsBaseModelView<LoginModel, LoginView> {
 
     public LoginModelView(LoginModel baseModel, LoginView baseView) {
         super(baseModel, baseView);

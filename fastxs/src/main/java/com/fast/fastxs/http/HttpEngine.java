@@ -100,6 +100,7 @@ public class HttpEngine extends BaseHttpEngine {
                 public void onResponse(Call call, Response response) throws IOException {
                     int code = response.code();
                     xcall.setStatus(XoKCall.FINISH);
+                    LogUtils.w(TAG, "HttpEngine code:" + code);
                     if (body instanceof DownloadMap) {
                         HashMap<String, Object> downMap = ((DownloadMap) body).getDownloadFileData();
                         InputStream is = null;
@@ -123,7 +124,6 @@ public class HttpEngine extends BaseHttpEngine {
                             }
                             fos.flush();
                             //callback.onResponse("", code);
-                            LogUtils.w(TAG, "HttpEngine code:" + code);
                             LogUtils.w(TAG, "HttpEngine " + " httpSend url= " + url + " end");
                         } catch (Exception e) {
                             callback.onFailure(e, call.hashCode());
@@ -141,8 +141,7 @@ public class HttpEngine extends BaseHttpEngine {
                         }
                     } else {
                         String result = response.body().string();
-                        LogUtils.w(TAG, "HttpEngine code:" + code);
-                        LogUtils.w(TAG, "HttpEngine body:" + result);
+                        LogUtils.w(TAG, "HttpEngine result:" + result);
                         LogUtils.w(TAG, "HttpEngine " + " httpSend url= " + url + " end");
                         callback.onResponse(result, code);
                     }
